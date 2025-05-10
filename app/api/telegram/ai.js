@@ -161,3 +161,5 @@ export async function handleAIMessage(text, chatId, telegram) {
 
   await telegram.sendMessage(chatId, aiReply, replyMarkup);
 }
+
+export { askAI };
