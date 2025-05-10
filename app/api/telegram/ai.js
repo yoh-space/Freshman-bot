@@ -144,3 +144,20 @@ function generateImagePrompt(question) {
           Use simple colors, include labels in English and Amharic, 
           make it culturally relevant.`;
 }
+export async function handleAIMessage(text, chatId, telegram) {
+  await telegram.sendChatAction(chatId, 'typing');
+
+  const { text: aiReply, quickReplies } = await askAI(text);
+
+  const replyMarkup = quickReplies?.length
+    ? {
+        reply_markup: {
+          keyboard: [quickReplies.map(reply => ({ text: reply }))],
+          resize_keyboard: true,
+          one_time_keyboard: true,
+        }
+      }
+    : {};
+
+  await telegram.sendMessage(chatId, aiReply, replyMarkup);
+}
