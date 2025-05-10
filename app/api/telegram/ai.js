@@ -4,39 +4,44 @@ import fetch from 'node-fetch';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
+// Ethiopian-themed emojis and styling
+const ETHIOPIAN_THEME = {
+  greeting: "ሰላም! 👋",
+  welcome: "እንኳን ወደ ዮኢት የትምህርት ረዳት በደህና መጡ! 📚",
+  error: "ይቅርታ! ⚠️",
+  success: "ተሳክቷል! ✨",
+  thinking: "እያሰብኩ... 🤔",
+  subjects: ["ፊዚክስ", "ሒሳብ", "ኬሚስትሪ", "ባዮሎጂ", "ኮምፒውተር", "ሎጂክ", "ኢኮኖሚክስ"],
+  universities: ["አዲስ አበባ", "ባህር ዳር", "ጅማ", "መቀሌ", "አርባ ምንጭ", "ወሎ", "ዲላ"]
+};
+
 async function askAI(question, subject, university) {
-  const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
-  if (!apiKey) {
+  if (!process.env.NEXT_PUBLIC_OPENROUTER_API_KEY) {
     return {
-      text: 'AI API key is not configured.',
+      text: `${ETHIOPIAN_THEME.error} AI API key is not configured.`,
       quickReplies: ["Contact support"]
     };
   }
 
-  // Step 1: Classify subject if not provided
-  let detectedSubject = subject;
-  if (!detectedSubject) {
-    detectedSubject = await classifySubject(question);
-  }
-
-  // Step 2: Fetch PDF text for subject
-  let pdfText = '';
-  if (detectedSubject) {
-    pdfText = await fetchSubjectPDFText(detectedSubject);
-  }
-
   try {
-    // System prompt with PDF context
+    // Enhanced system prompt with Ethiopian context
     const systemPrompt = `
-      You are an educational AI assistant for Ethiopian university freshmen.
-      Use the following document as your main source for this answer:
-      ---
-      ${pdfText ? pdfText.substring(0, 4000) : 'No document found.'}
-      ---
-      Subject: ${detectedSubject || 'Not specified'}
-      University: ${university || 'Not specified'}
+      You are Yoሕ (Yoh), an educational AI assistant for Ethiopian university freshmen. 
+      You help students with academic questions in any subject with these specializations:
+      
+      - Always provide answers relevant to Ethiopian higher education context
+      - Use simple English with occasional Amharic phrases (transliterated)
+      - Format answers clearly with emojis and examples
+      - Suggest related topics and study tips
+      - Be encouraging and motivational
+      - For non-academic questions, guide back to studies with cultural relevance
+      
+      Current context:
+      - Subject: ${subject || 'Not specified'}
+      - University: ${university || 'Not specified'}
+      
       Respond in this format:
-      [Main Answer]
+      [Emoji] [Main Answer]
       [Explanation with examples]
       [Related topics/quick questions]
       [Motivational closing]
@@ -61,7 +66,7 @@ async function askAI(question, subject, university) {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
           'HTTP-Referer': 'https://yoit-solution.vercel.app',
           'X-Title': 'YoIt Education Assistant'
         }
@@ -69,37 +74,64 @@ async function askAI(question, subject, university) {
     );
 
     const aiResponse = response.data.choices?.[0]?.message?.content || 
-      'No response received from AI.';
+      `${ETHIOPIAN_THEME.error} No response received from AI.`;
 
     return {
       text: formatResponse(aiResponse),
-      quickReplies: []
+      quickReplies: generateQuickReplies(question, subject, university),
+      imagePrompt: shouldGenerateImage(question) ? generateImagePrompt(question) : undefined
     };
 
   } catch (error) {
     console.error('OpenRouter API error:', error.response?.data || error.message);
     return {
-      text: error.response?.data?.error?.message || 'AI request failed. Please try again.',
-      quickReplies: ["Try again", "Contact support"]
+      text: `${ETHIOPIAN_THEME.error} ${error.response?.data?.error?.message || 'AI request failed. Please try again.'}`,
+      quickReplies: ["Try again", "Ask differently", "Contact support"]
     };
   }
 }
 
 async function handleAIMessage(text, chatId, telegram) {
   try {
+    // Show typing indicator
     await telegram.sendChatAction(chatId, 'typing');
+    
+    // Add small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 1000));
-    const { text: aiReply } = await askAI(text);
-    await telegram.sendMessage(chatId, aiReply);
+    
+    // Get AI response
+    const { text: aiReply, quickReplies } = await askAI(text);
+    
+    // Prepare reply markup with quick replies and main menu option
+    const replyMarkup = {
+      reply_markup: {
+        keyboard: [
+          ...(quickReplies?.length ? [quickReplies.map(reply => ({ text: reply }))] : []),
+          [{ text: '🔙 Main Menu' }]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true,
+      }
+    };
+
+    // Send the message
+    await telegram.sendMessage(chatId, aiReply, replyMarkup);
   } catch (error) {
     console.error('Error handling AI message:', error);
     await telegram.sendMessage(
       chatId,
-      'Sorry, I encountered an error. Please try again later.'
+      `${ETHIOPIAN_THEME.error} Sorry, I encountered an error. Please try again later.`,
+      {
+        reply_markup: {
+          keyboard: [[{ text: 'Try Again' }, { text: 'Main Menu' }]],
+          resize_keyboard: true
+        }
+      }
     );
   }
 }
 
+// Helper functions
 function formatResponse(text) {
   // Replace subject names with Amharic, then apply Telegram Markdown styling
   let formatted = text
@@ -110,17 +142,64 @@ function formatResponse(text) {
     .replace(/Computer/g, "ኮምፒውተር")
     .replace(/Logic/g, "ሎጂክ")
     .replace(/Economics/g, "ኢኮኖሚክስ");
+
+  // Remove unnecessary special characters (except for Markdown)
   formatted = formatted.replace(/[•\-\_\=\~\#\^\[\]\{\}\|\<\>\$\%\@\`]/g, '');
+
+  // Bold main answer (first line)
   formatted = formatted.replace(/^(.*?)(\n|$)/, (m, p1, p2) => `*${p1.trim()}*${p2 || ''}`);
+
+  // Italicize explanations (lines starting with 'Explanation' or 'For example')
   formatted = formatted.replace(/(Explanation:|For example:)(.*)/gi, (m, p1, p2) => `_${p1}${p2}_`);
+
+  // Bold related topics/questions
   formatted = formatted.replace(/(Related topics:|Quick questions:)(.*)/gi, (m, p1, p2) => `*${p1}${p2}*`);
+
+  // Italicize motivational closing (lines starting with 'Tip:' or 'Good luck')
   formatted = formatted.replace(/^(Tip:|Good luck.*)$/gim, (m) => `_${m}_`);
+
+  // Clean up double spaces
   formatted = formatted.replace(/  +/g, ' ');
+
   return formatted.trim();
+}
+
+function generateQuickReplies(question, subject, university) {
+  const baseReplies = [
+    "Explain simpler",
+    "Give examples",
+    "Related topics"
+  ];
+  
+  if (subject) {
+    baseReplies.unshift(`More ${subject} help`);
+  }
+  
+  if (question.includes("calculate") || question.includes("solve")) {
+    baseReplies.push("Show steps");
+  }
+  
+  if (question.includes("definition")) {
+    baseReplies.push("Amharic translation");
+  }
+  
+  return baseReplies.slice(0, 3); // Limit to 3 quick replies
+}
+
+function shouldGenerateImage(question) {
+  const imageKeywords = ["diagram", "graph", "illustrate", "visual", "structure"];
+  return imageKeywords.some(keyword => question.toLowerCase().includes(keyword));
+}
+
+function generateImagePrompt(question) {
+  return `Educational diagram for Ethiopian university students: ${question}. 
+          Use simple colors, include labels in English and Amharic, 
+          make it culturally relevant.`;
 }
 
 // Helper: Classify subject from question using AI
 async function classifySubject(question) {
+  // Use a simple prompt to OpenRouter for subject classification
   const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
   const systemPrompt = `Classify the following question into one of these subjects: Physics, Math, Chemistry, Biology, Computer, Logic, Economics. Only return the subject name.`;
   const response = await axios.post(
@@ -140,6 +219,7 @@ async function classifySubject(question) {
       }
     }
   );
+  // Return the subject (e.g., 'Physics')
   return response.data.choices?.[0]?.message?.content?.trim() || '';
 }
 
@@ -167,4 +247,5 @@ async function fetchSubjectPDFText(subject) {
   }
 }
 
+// Export all functions at the bottom
 export { askAI, handleAIMessage };
