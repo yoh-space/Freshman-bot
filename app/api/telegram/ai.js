@@ -131,7 +131,8 @@ async function handleAIMessage(text, chatId, telegram) {
 
 // Helper functions
 function formatResponse(text) {
-  return text
+  // Replace subject names with Amharic, then apply Telegram Markdown styling
+  let formatted = text
     .replace(/Physics/g, "ፊዚክስ")
     .replace(/Math/g, "ሒሳብ")
     .replace(/Chemistry/g, "ኬሚስትሪ")
@@ -139,6 +140,26 @@ function formatResponse(text) {
     .replace(/Computer/g, "ኮምፒውተር")
     .replace(/Logic/g, "ሎጂክ")
     .replace(/Economics/g, "ኢኮኖሚክስ");
+
+  // Remove unnecessary special characters (except for Markdown)
+  formatted = formatted.replace(/[•\-\_\=\~\#\^\[\]\{\}\|\<\>\$\%\@\`]/g, '');
+
+  // Bold main answer (first line)
+  formatted = formatted.replace(/^(.*?)(\n|$)/, (m, p1, p2) => `*${p1.trim()}*${p2 || ''}`);
+
+  // Italicize explanations (lines starting with 'Explanation' or 'For example')
+  formatted = formatted.replace(/(Explanation:|For example:)(.*)/gi, (m, p1, p2) => `_${p1}${p2}_`);
+
+  // Bold related topics/questions
+  formatted = formatted.replace(/(Related topics:|Quick questions:)(.*)/gi, (m, p1, p2) => `*${p1}${p2}*`);
+
+  // Italicize motivational closing (lines starting with 'Tip:' or 'Good luck')
+  formatted = formatted.replace(/^(Tip:|Good luck.*)$/gim, (m) => `_${m}_`);
+
+  // Clean up double spaces
+  formatted = formatted.replace(/  +/g, ' ');
+
+  return formatted.trim();
 }
 
 function generateQuickReplies(question, subject, university) {
