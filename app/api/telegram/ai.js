@@ -9,18 +9,11 @@ const ETHIOPIAN_THEME = {
   error: "ይቅርታ! ⚠️",
   success: "ተሳክቷል! ✨",
   thinking: "እያሰብኩ... 🤔",
-  subjects: ["ፊዚክስ", "ሒሳብ", "ኬሚስትሪ", "ባዮሎጂ", "ኮምፒውተር", "ሎጂክሎጂክ", "ኢኮኖሚክስ"],
+  subjects: ["ፊዚክስ", "ሒሳብ", "ኬሚስትሪ", "ባዮሎጂ", "ኮምፒውተር", "ሎጂክ", "ኢኮኖሚክስ"],
   universities: ["አዲስ አበባ", "ባህር ዳር", "ጅማ", "መቀሌ", "አርባ ምንጭ", "ወሎ", "ዲላ"]
 };
 
-/**
- * Ask the AI a question and get an educational answer with Ethiopian student context
- * @param {string} question - The user's question
- * @param {string} [subject] - Optional subject area
- * @param {string} [university] - Optional university name
- * @returns {Promise<{text: string, quickReplies?: string[], imagePrompt?: string}>} - Enhanced AI response
- */
-export async function askAI(question, subject, university) {
+async function askAI(question, subject, university) {
   if (!process.env.NEXT_PUBLIC_OPENROUTER_API_KEY) {
     return {
       text: `${ETHIOPIAN_THEME.error} AI API key is not configured.`,
@@ -66,7 +59,7 @@ export async function askAI(question, subject, university) {
             content: question
           }
         ],
-        temperature: 0.7, // Slightly more creative responses
+        temperature: 0.7,
       },
       {
         headers: {
@@ -81,27 +74,63 @@ export async function askAI(question, subject, university) {
     const aiResponse = response.data.choices?.[0]?.message?.content || 
       `${ETHIOPIAN_THEME.error} No response received from AI.`;
 
-    // Generate quick reply suggestions
-    const quickReplies = generateQuickReplies(question, subject, university);
-
     return {
       text: formatResponse(aiResponse),
-      quickReplies,
+      quickReplies: generateQuickReplies(question, subject, university),
       imagePrompt: shouldGenerateImage(question) ? generateImagePrompt(question) : undefined
     };
 
   } catch (error) {
-    const errorMessage = error.response?.data?.error?.message || 'AI request failed.';
+    console.error('OpenRouter API error:', error.response?.data || error.message);
     return {
-      text: `${ETHIOPIAN_THEME.error} ${errorMessage}`,
+      text: `${ETHIOPIAN_THEME.error} ${error.response?.data?.error?.message || 'AI request failed. Please try again.'}`,
       quickReplies: ["Try again", "Ask differently", "Contact support"]
     };
   }
 }
 
-// Helper functions for enhanced interaction
+async function handleAIMessage(text, chatId, telegram) {
+  try {
+    // Show typing indicator
+    await telegram.sendChatAction(chatId, 'typing');
+    
+    // Add small delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Get AI response
+    const { text: aiReply, quickReplies } = await askAI(text);
+    
+    // Prepare reply markup with quick replies and main menu option
+    const replyMarkup = {
+      reply_markup: {
+        keyboard: [
+          ...(quickReplies?.length ? [quickReplies.map(reply => ({ text: reply }))] : []),
+          [{ text: '🔙 Main Menu' }]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true,
+      }
+    };
+
+    // Send the message
+    await telegram.sendMessage(chatId, aiReply, replyMarkup);
+  } catch (error) {
+    console.error('Error handling AI message:', error);
+    await telegram.sendMessage(
+      chatId,
+      `${ETHIOPIAN_THEME.error} Sorry, I encountered an error. Please try again later.`,
+      {
+        reply_markup: {
+          keyboard: [[{ text: 'Try Again' }, { text: 'Main Menu' }]],
+          resize_keyboard: true
+        }
+      }
+    );
+  }
+}
+
+// Helper functions
 function formatResponse(text) {
-  // Add Ethiopian-themed formatting
   return text
     .replace(/Physics/g, "ፊዚክስ")
     .replace(/Math/g, "ሒሳብ")
@@ -131,7 +160,7 @@ function generateQuickReplies(question, subject, university) {
     baseReplies.push("Amharic translation");
   }
   
-  return baseReplies;
+  return baseReplies.slice(0, 3); // Limit to 3 quick replies
 }
 
 function shouldGenerateImage(question) {
@@ -144,22 +173,6 @@ function generateImagePrompt(question) {
           Use simple colors, include labels in English and Amharic, 
           make it culturally relevant.`;
 }
-export async function handleAIMessage(text, chatId, telegram) {
-  await telegram.sendChatAction(chatId, 'typing');
 
-  const { text: aiReply, quickReplies } = await askAI(text);
-
-  const replyMarkup = quickReplies?.length
-    ? {
-        reply_markup: {
-          keyboard: [quickReplies.map(reply => ({ text: reply }))],
-          resize_keyboard: true,
-          one_time_keyboard: true,
-        }
-      }
-    : {};
-
-  await telegram.sendMessage(chatId, aiReply, replyMarkup);
-}
-
-export { askAI };
+// Export all functions at the bottom
+export { askAI, handleAIMessage };
