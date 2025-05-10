@@ -16,30 +16,44 @@ const ETHIOPIAN_THEME = {
 };
 
 async function askAI(question, subject, university) {
-  if (!process.env.NEXT_PUBLIC_OPENROUTER_API_KEY) {
+  const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
+  if (!apiKey) {
     return {
       text: `${ETHIOPIAN_THEME.error} AI API key is not configured.`,
       quickReplies: ["Contact support"]
     };
   }
 
+  // Step 1: Classify subject if not provided
+  let detectedSubject = subject;
+  if (!detectedSubject) {
+    detectedSubject = await classifySubject(question);
+  }
+
+  // Step 2: Fetch PDF text for subject
+  let pdfText = '';
+  if (detectedSubject) {
+    pdfText = await fetchSubjectPDFText(detectedSubject);
+  }
+
   try {
-    // Enhanced system prompt with Ethiopian context
+    // Enhanced system prompt with Ethiopian context and PDF context
     const systemPrompt = `
-      You are Yoሕ (Yoh), an educational AI assistant for Ethiopian university freshmen. 
+      You are Yoሕ (Yoh), an educational AI assistant for Ethiopian university freshmen.
       You help students with academic questions in any subject with these specializations:
-      
       - Always provide answers relevant to Ethiopian higher education context
       - Use simple English with occasional Amharic phrases (transliterated)
       - Format answers clearly with emojis and examples
       - Suggest related topics and study tips
       - Be encouraging and motivational
       - For non-academic questions, guide back to studies with cultural relevance
-      
+      - Use the following document as your main source for this answer:
+      ---
+      ${pdfText ? pdfText.substring(0, 4000) : 'No document found.'}
+      ---
       Current context:
-      - Subject: ${subject || 'Not specified'}
+      - Subject: ${detectedSubject || 'Not specified'}
       - University: ${university || 'Not specified'}
-      
       Respond in this format:
       [Emoji] [Main Answer]
       [Explanation with examples]
@@ -66,7 +80,7 @@ async function askAI(question, subject, university) {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
+          Authorization: `Bearer ${apiKey}`,
           'HTTP-Referer': 'https://yoit-solution.vercel.app',
           'X-Title': 'YoIt Education Assistant'
         }
@@ -78,7 +92,7 @@ async function askAI(question, subject, university) {
 
     return {
       text: formatResponse(aiResponse),
-      quickReplies: generateQuickReplies(question, subject, university),
+      quickReplies: generateQuickReplies(question, detectedSubject, university),
       imagePrompt: shouldGenerateImage(question) ? generateImagePrompt(question) : undefined
     };
 
