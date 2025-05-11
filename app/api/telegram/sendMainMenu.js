@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Link from 'next/link';
 const TELEGRAM_API = 'https://api.telegram.org/bot';
 const BOT_TOKEN = process.env.BOT_TOKEN;
 
@@ -24,8 +25,15 @@ export async function sendMainMenu(chatId, message = null) {
         ],
         [
           { text: '🆘 Help', callback_data: 'menu_help' }
+        ],
+        [
+          { text: '🗔 Open Mini App', url: 'https://freshman-five.vercel.app/miniapp' }
         ]
       ]
     }
   });
 }
+
+// Example: Add a button to open the mini app (for demo, you can later make this dynamic per subject)
+// Place this in your main menu or subject menu rendering code:
+// <Link href="/miniapp" target="_blank"><button>Open Mini App</button></Link>
