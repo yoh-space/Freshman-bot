@@ -1,6 +1,7 @@
 "use client";
 import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
+import SimplePDFViewer from './SimplePDFViewer';
 
 function MiniAppContent() {
   const searchParams = useSearchParams();
@@ -59,7 +60,9 @@ function MiniAppContent() {
       ) : pdfUrl ? (
         <>
           <p>Here is your <b>{type}</b> for <b>{subject && subject.replace(/-/g, ' ')}</b>:</p>
-          <iframe src={pdfUrl} width="100%" height="600px" style={{border:'1px solid #ccc', borderRadius:'8px', minHeight:'60vh', background:'#f9f9f9'}} title="PDF Preview" />
+          <div style={{ width: '100%', maxWidth: 700, minHeight: 400, margin: '0 auto' }}>
+            <SimplePDFViewer url={pdfUrl} />
+          </div>
           <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{fontSize:'1.2em', color:'#0077cc', marginTop:16}}>Open PDF in new tab</a>
         </>
       ) : (
