@@ -1,7 +1,9 @@
 "use client";
 import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
-import SimplePDFViewer from './SimplePDFViewer';
+import dynamic from 'next/dynamic';
+
+const SimplePDFViewer = dynamic(() => import('./SimplePDFViewer'), { ssr: false });
 
 function MiniAppContent() {
   const searchParams = useSearchParams();
