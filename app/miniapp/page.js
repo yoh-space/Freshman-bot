@@ -9,6 +9,7 @@ function MiniAppContent() {
   const file = searchParams.get('file');
   const notfound = searchParams.get('notfound');
 
+  // Try to load the PDF directly from the public folder if the file exists
   // If file param is not present, try to reconstruct it from type and subject
   let effectiveFile = file;
   let effectiveType = type;
@@ -46,9 +47,10 @@ function MiniAppContent() {
     else if (effectiveType === 'worksheet' && effectiveSubject === 'math') effectiveFile = 'math-worksheet.pdf';
     else if (effectiveType === 'exam' && effectiveSubject === 'physics') effectiveFile = 'physics-mid-dilla-uv.pdf';
     else effectiveFile = subjectMap[effectiveSubject];
-    if (effectiveFile) effectiveFile = `/${folder}/${effectiveFile}`;
+    if (effectiveFile) effectiveFile = `${folder}/${effectiveFile}`;
   }
-  const pdfUrl = effectiveFile || null;
+  // Always try to load the PDF directly from the public folder
+  const pdfUrl = effectiveFile ? `/` + effectiveFile : null;
 
   return (
     <main style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
