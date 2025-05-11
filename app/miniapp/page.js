@@ -1,8 +1,8 @@
 "use client";
-
+import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 
-export default function MiniAppPage() {
+function MiniAppContent() {
   const searchParams = useSearchParams();
   const type = searchParams.get('type');
   const subject = searchParams.get('subject');
@@ -59,5 +59,13 @@ export default function MiniAppPage() {
         <p>Welcome! Please select a subject from the Telegram bot menu.</p>
       )}
     </main>
+  );
+}
+
+export default function MiniAppPage() {
+  return (
+    <Suspense>
+      <MiniAppContent />
+    </Suspense>
   );
 }
