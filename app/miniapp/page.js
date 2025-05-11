@@ -1,6 +1,7 @@
 "use client";
 
 import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default function MiniAppPage() {
   const searchParams = useSearchParams();
@@ -44,6 +45,7 @@ export default function MiniAppPage() {
   const fileUrl = file ? `/` + folder + `/` + file : null;
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <main style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
       <h1>Telegram Mini App</h1>
       {type && subject ? (
@@ -59,5 +61,6 @@ export default function MiniAppPage() {
         <p>Welcome! Please select a subject from the Telegram bot menu.</p>
       )}
     </main>
+    </Suspense>
   );
 }
