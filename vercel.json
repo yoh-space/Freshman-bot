@@ -5,36 +5,6 @@
       "src": "/api/telegram",
       "methods": ["POST", "GET"],
       "dest": "/api/telegram"
-    },
-    {
-      "src": "/(.*).pdf",
-      "headers": {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": "inline",
-        "Cache-Control": "public, max-age=31536000, immutable",
-        "Access-Control-Allow-Origin": "*"
-      }
-    },
-    {
-      "src": "/_next/static/(.*)",
-      "headers": {
-        "Cache-Control": "public, max-age=31536000, immutable"
-      }
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Frame-Options",
-          "value": "ALLOW-FROM https://web.telegram.org"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "frame-ancestors https://web.telegram.org"
-        }
-      ]
     }
   ]
 }
