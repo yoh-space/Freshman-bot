@@ -58,10 +58,12 @@ export async function sendDocument(chatId, type, subject) {
   // Remove duplicates
   matches = matches.filter((v,i,a) => a.findIndex(t => t.file === v.file && t.folder === v.folder) === i);
   if (!matches.length) {
+    // If no document, open mini app with error message
+    const miniAppUrl = `https://freshman-five.vercel.app/miniapp?type=${encodeURIComponent(type)}&subject=${encodeURIComponent(subject)}&notfound=1`;
     await axios.post(`${TELEGRAM_API}${BOT_TOKEN}/sendMessage`, {
       chat_id: chatId,
       text: 'The requested PDF will be uploaded soon. Please check back later.',
-      reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Menu', callback_data: 'main_menu' }]] }
+      reply_markup: { inline_keyboard: [[{ text: 'Open Mini App', web_app: { url: miniAppUrl } }], [{ text: '🔙 Back to Menu', callback_data: 'main_menu' }]] }
     });
     return;
   }
@@ -70,21 +72,11 @@ export async function sendDocument(chatId, type, subject) {
     ? process.env.VERCEL_URL.replace(/\/$/, '')
     : `https://${process.env.VERCEL_URL.replace(/\/$/, '')}`;
   for (const match of matches) {
-    const url = `${baseUrl}/${match.folder}/${match.file}`;
-    try {
-      await axios.post(`${TELEGRAM_API}${BOT_TOKEN}/sendDocument`, {
-        chat_id: chatId,
-        document: url,
-        caption: `Here is your ${type} for ${subject}`,
-        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Menu', callback_data: 'main_menu' }]] }
-      });
-    } catch (err) {
-      await axios.post(`${TELEGRAM_API}${BOT_TOKEN}/sendMessage`, {
-        chat_id: chatId,
-        text: `Couldn't send the document directly. [Click here to view/download](${url})`,
-        parse_mode: 'Markdown',
-        reply_markup: { inline_keyboard: [[{ text: '🔙 Back to Menu', callback_data: 'main_menu' }]] }
-      });
-    }
+    const miniAppUrl = `https://freshman-five.vercel.app/miniapp?type=${encodeURIComponent(type)}&subject=${encodeURIComponent(subject)}&file=${encodeURIComponent(match.folder + '/' + match.file)}`;
+    await axios.post(`${TELEGRAM_API}${BOT_TOKEN}/sendMessage`, {
+      chat_id: chatId,
+      text: `Opening your ${type} for ${subject}...`,
+      reply_markup: { inline_keyboard: [[{ text: 'Open in Mini App', web_app: { url: miniAppUrl } }], [{ text: '🔙 Back to Menu', callback_data: 'main_menu' }]] }
+    });
   }
 }
