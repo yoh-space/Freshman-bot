@@ -14,7 +14,7 @@ const ETHIOPIAN_THEME = {
 };
 
 async function askAI(question, subject, university) {
-  if (!process.env.NEXT_PUBLIC_OPENROUTER_API_KEY) {
+  if (!process.env.OPENROUTER_API_KEY) {
     return {
       text: `${ETHIOPIAN_THEME.error} AI API key is not configured.`,
       quickReplies: ["Contact support"]
@@ -64,7 +64,7 @@ async function askAI(question, subject, university) {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENROUTER_API_KEY}`,
+          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
           'HTTP-Referer': 'https://yoit-solution.vercel.app',
           'X-Title': 'YoIt Education Assistant'
         }

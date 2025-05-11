@@ -1,7 +1,18 @@
 "use client";
 import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
-import { useState, useRef, useEffect } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the AIChatBot component with no SSR
+const AIChatBot = dynamic(() => import('../components/AIChatBot'), { 
+  ssr: false,
+  loading: () => <div style={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    height: '100vh' 
+  }}>Loading AI Chat...</div>
+});
 
 function MiniAppContent() {
   const searchParams = useSearchParams();
@@ -11,90 +22,51 @@ function MiniAppContent() {
   const notfound = searchParams.get('notfound');
   const aiMode = searchParams.get('ai');
 
-  // AI chat state
-  const [messages, setMessages] = useState([
-    { from: 'ai', text: '👋 Hi! I am YoIT AI. Ask me any academic question.' }
-  ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
-
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
 
-  async function sendMessage(e) {
-    e.preventDefault();
-    if (!input.trim()) return;
-    const userMsg = input;
-    setMessages(msgs => [...msgs, { from: 'user', text: userMsg }]);
-    setInput('');
-    setLoading(true);
-    try {
-      const res = await fetch('/api/telegram/ai-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: userMsg })
-      });
-      const data = await res.json();
-      setMessages(msgs => [...msgs, { from: 'ai', text: data.text }]);
-    } catch (err) {
-      setMessages(msgs => [...msgs, { from: 'ai', text: '⚠️ Sorry, failed to get a response.' }]);
-    }
-    setLoading(false);
-  }
+//   if (aiMode === '1') {
+//     return (
+//       <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', background: '#f7fafd' }}>
+//         <div style={{ width: '100%', maxWidth: 480, margin: '32px auto 0', background: '#fff', borderRadius: 12, boxShadow: '0 2px 12px #0001', padding: 16, display: 'flex', flexDirection: 'column', height: '80vh' }}>
+//           <div style={{ flex: 1, overflowY: 'auto', marginBottom: 12 }}>
+//             {messages.map((msg, i) => (
+//               <div key={i} style={{ textAlign: msg.from === 'user' ? 'right' : 'left', margin: '8px 0' }}>
+//                 <span style={{
+//                   display: 'inline-block',
+//                   background: msg.from === 'user' ? '#d1e7ff' : '#e9fbe5',
+//                   color: '#222',
+//                   borderRadius: 16,
+//                   padding: '8px 14px',
+//                   maxWidth: '80%',
+//                   fontSize: '1.05em',
+//                   boxShadow: msg.from === 'user' ? '1px 1px 6px #b3d8ff44' : '1px 1px 6px #b3ffb344'
+//                 }}>{msg.text}</span>
+//               </div>
+//             ))}
+//             <div ref={messagesEndRef} />
+//           </div>
+//           <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8 }}>
+//             <input
+//               type="text"
+//               value={input}
+//               onChange={e => setInput(e.target.value)}
+//               placeholder="Type your question..."
+//               style={{ flex: 1, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontSize: '1em' }}
+//               disabled={loading}
+//               autoFocus
+//             />
+//             <button type="submit" disabled={loading || !input.trim()} style={{ padding: '0 18px', borderRadius: 8, background: '#0077cc', color: '#fff', border: 'none', fontWeight: 600, fontSize: '1em' }}>{loading ? '...' : 'Send'}</button>
+//           </form>
+//           <button onClick={handleBackToMenu} style={{ marginTop: 16, background: '#eee', border: 'none', borderRadius: 8, padding: '8px 0', fontWeight: 500, color: '#0077cc', cursor: 'pointer' }}>🔙 Back to Menu</button>
+//         </div>
+//       </main>
+//     );
+//   }
 
-  function handleBackToMenu() {
-    if (window.Telegram && window.Telegram.WebApp) {
-      window.Telegram.WebApp.close();
-    } else {
-      window.location.href = 'https://t.me/your_bot_username'; // fallback
-    }
-  }
-
-  if (aiMode === '1') {
-    return (
-      <main style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '100vh', background: '#f7fafd' }}>
-        <div style={{ width: '100%', maxWidth: 480, margin: '32px auto 0', background: '#fff', borderRadius: 12, boxShadow: '0 2px 12px #0001', padding: 16, display: 'flex', flexDirection: 'column', height: '80vh' }}>
-          <div style={{ flex: 1, overflowY: 'auto', marginBottom: 12 }}>
-            {messages.map((msg, i) => (
-              <div key={i} style={{ textAlign: msg.from === 'user' ? 'right' : 'left', margin: '8px 0' }}>
-                <span style={{
-                  display: 'inline-block',
-                  background: msg.from === 'user' ? '#d1e7ff' : '#e9fbe5',
-                  color: '#222',
-                  borderRadius: 16,
-                  padding: '8px 14px',
-                  maxWidth: '80%',
-                  fontSize: '1.05em',
-                  boxShadow: msg.from === 'user' ? '1px 1px 6px #b3d8ff44' : '1px 1px 6px #b3ffb344'
-                }}>{msg.text}</span>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-          <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8 }}>
-            <input
-              type="text"
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              placeholder="Type your question..."
-              style={{ flex: 1, padding: 10, borderRadius: 8, border: '1px solid #ccc', fontSize: '1em' }}
-              disabled={loading}
-              autoFocus
-            />
-            <button type="submit" disabled={loading || !input.trim()} style={{ padding: '0 18px', borderRadius: 8, background: '#0077cc', color: '#fff', border: 'none', fontWeight: 600, fontSize: '1em' }}>{loading ? '...' : 'Send'}</button>
-          </form>
-          <button onClick={handleBackToMenu} style={{ marginTop: 16, background: '#eee', border: 'none', borderRadius: 8, padding: '8px 0', fontWeight: 500, color: '#0077cc', cursor: 'pointer' }}>🔙 Back to Menu</button>
-        </div>
-      </main>
-    );
-  }
-
-  // Try to load the PDF directly from the public folder if the file exists
-  // If file param is not present, try to reconstruct it from type and subject
   let effectiveFile = file;
   let effectiveType = type;
   let effectiveSubject = subject;
