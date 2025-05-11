@@ -27,7 +27,7 @@ export async function sendMainMenu(chatId, message = null) {
           { text: '🆘 Help', callback_data: 'menu_help' }
         ],
         [
-          { text: '🗔 Open Mini App', url: 'https://freshman-five.vercel.app/miniapp' }
+          { text: '🗔 Open Mini App', url: 'https://freshman-five.vercel.app/miniapp/pages' }
         ]
       ]
     }
