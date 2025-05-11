@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
 import 'pdfjs-dist/web/pdf_viewer.css';
 
-// Set the workerSrc property
-GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib ? pdfjsLib.version : '4.2.67'}/pdf.worker.min.js`;
+// Set the workerSrc property correctly
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 export default function SimplePDFViewer({ url }) {
   const canvasRef = useRef(null);
