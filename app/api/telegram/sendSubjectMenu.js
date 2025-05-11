@@ -32,151 +32,151 @@ export async function sendSubjectMenu(chatId, resourceType) {
   if (resourceType === 'module') {
     keyboard = [
       [
-        { text: 'Math', callback_data: 'module_math' },
-        { text: 'Maths Applied', callback_data: 'module_maths-applied' },
-        { text: 'Maths Social', callback_data: 'module_maths-social' }
+        { text: 'Math', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=math' } },
+        { text: 'Maths Applied', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=maths-applied' } },
+        { text: 'Maths Social', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=maths-social' } }
       ],
       [
-        { text: 'English I', callback_data: 'module_english-i' },
-        { text: 'English II', callback_data: 'module_english-ii' },
-        { text: 'Chemistry', callback_data: 'module_chemistry' }
+        { text: 'English I', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=english-i' } },
+        { text: 'English II', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=english-ii' } },
+        { text: 'Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=chemistry' } }
       ],
       [
-        { text: 'Biology', callback_data: 'module_biology' },
-        { text: 'Organic Chemistry', callback_data: 'module_organic-chemistry' },
-        { text: 'Anthropology', callback_data: 'module_anthropology' }
+        { text: 'Biology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=biology' } },
+        { text: 'Organic Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=organic-chemistry' } },
+        { text: 'Anthropology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=anthropology' } }
       ],
       [
-        { text: 'Inclusiveness', callback_data: 'module_inclusiveness' },
-        { text: 'Emergining technology', callback_data: 'module_emerging-technology' },
-        { text: 'History', callback_data: 'module_history' }
+        { text: 'Inclusiveness', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=inclusiveness' } },
+        { text: 'Emergining technology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=emerging-technology' } },
+        { text: 'History', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=history' } }
       ],
       [
-        { text: 'C++', callback_data: 'module_cpp' },
-        { text: 'Civics', callback_data: 'module_civics' },
-        { text: 'Logic', callback_data: 'module_logic' }
+        { text: 'C++', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=cpp' } },
+        { text: 'Civics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=civics' } },
+        { text: 'Logic', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=logic' } }
       ],
       [
-        { text: 'Geography', callback_data: 'module_geography' },
-        { text: 'Global Trend', callback_data: 'module_globaltrend' },
-        { text: 'Enterpreneurship', callback_data: 'module_enterpreneurship' }
+        { text: 'Geography', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=geography' } },
+        { text: 'Global Trend', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=globaltrend' } },
+        { text: 'Enterpreneurship', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=enterpreneurship' } }
       ],
       [
-        { text: 'Economics', callback_data: 'module_economics' }
+        { text: 'Economics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=module&subject=economics' } }
       ],
       [{ text: '🔙 Back', callback_data: 'main_menu' }]
     ];
   } else if (resourceType === 'exam') {
     keyboard = [
       [
-        { text: 'Math', callback_data: 'exam_math' },
-        { text: 'Maths Applied', callback_data: 'exam_maths-applied' },
-        { text: 'Maths Social', callback_data: 'exam_maths-social' }
+        { text: 'Math', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=math' } },
+        { text: 'Maths Applied', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=maths-applied' } },
+        { text: 'Maths Social', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=maths-social' } }
       ],
       [
-        { text: 'English I', callback_data: 'exam_english-i' },
-        { text: 'English II', callback_data: 'exam_english-ii' },
-        { text: 'Chemistry', callback_data: 'exam_chemistry' }
+        { text: 'English I', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=english-i' } },
+        { text: 'English II', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=english-ii' } },
+        { text: 'Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=chemistry' } }
       ],
       [
-        { text: 'Biology', callback_data: 'exam_biology' },
-        { text: 'Organic Chemistry', callback_data: 'exam_organic-chemistry' },
-        { text: 'Anthropology', callback_data: 'exam_anthropology' }
+        { text: 'Biology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=biology' } },
+        { text: 'Organic Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=organic-chemistry' } },
+        { text: 'Anthropology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=anthropology' } }
       ],
       [
-        { text: 'Inclusiveness', callback_data: 'exam_inclusiveness' },
-        { text: 'Emergining technology', callback_data: 'exam_emerging-technology' },
-        { text: 'History', callback_data: 'exam_history' }
+        { text: 'Inclusiveness', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=inclusiveness' } },
+        { text: 'Emergining technology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=emerging-technology' } },
+        { text: 'History', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=history' } }
       ],
       [
-        { text: 'C++', callback_data: 'exam_cpp' },
-        { text: 'Civics', callback_data: 'exam_civics' },
-        { text: 'Logic', callback_data: 'exam_logic' }
+        { text: 'C++', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=cpp' } },
+        { text: 'Civics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=civics' } },
+        { text: 'Logic', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=logic' } }
       ],
       [
-        { text: 'Geography', callback_data: 'exam_geography' },
-        { text: 'Global Trend', callback_data: 'exam_globaltrend' },
-        { text: 'Enterpreneurship', callback_data: 'exam_enterpreneurship' }
+        { text: 'Geography', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=geography' } },
+        { text: 'Global Trend', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=globaltrend' } },
+        { text: 'Enterpreneurship', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=enterpreneurship' } }
       ],
       [
-        { text: 'Economics', callback_data: 'exam_economics' },
-        { text: 'Physics', callback_data: 'exam_physics' }
+        { text: 'Economics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=economics' } },
+        { text: 'Physics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=exam&subject=physics' } }
       ],
       [{ text: '🔙 Back', callback_data: 'main_menu' }]
     ];
   } else if (resourceType === 'note') {
     keyboard = [
       [
-        { text: 'Math', callback_data: 'note_math' },
-        { text: 'Maths Applied', callback_data: 'note_maths-applied' },
-        { text: 'Maths Social', callback_data: 'note_maths-social' }
+        { text: 'Math', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=math' } },
+        { text: 'Maths Applied', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=maths-applied' } },
+        { text: 'Maths Social', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=maths-social' } }
       ],
       [
-        { text: 'English I', callback_data: 'note_english-i' },
-        { text: 'English II', callback_data: 'note_english-ii' },
-        { text: 'Chemistry', callback_data: 'note_chemistry' }
+        { text: 'English I', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=english-i' } },
+        { text: 'English II', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=english-ii' } },
+        { text: 'Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=chemistry' } }
       ],
       [
-        { text: 'Biology', callback_data: 'note_biology' },
-        { text: 'Organic Chemistry', callback_data: 'note_organic-chemistry' },
-        { text: 'Anthropology', callback_data: 'note_anthropology' }
+        { text: 'Biology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=biology' } },
+        { text: 'Organic Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=organic-chemistry' } },
+        { text: 'Anthropology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=anthropology' } }
       ],
       [
-        { text: 'Inclusiveness', callback_data: 'note_inclusiveness' },
-        { text: 'Emergining technology', callback_data: 'note_emerging-technology' },
-        { text: 'History', callback_data: 'note_history' }
+        { text: 'Inclusiveness', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=inclusiveness' } },
+        { text: 'Emergining technology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=emerging-technology' } },
+        { text: 'History', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=history' } }
       ],
       [
-        { text: 'C++', callback_data: 'note_cpp' },
-        { text: 'Civics', callback_data: 'note_civics' },
-        { text: 'Logic', callback_data: 'note_logic' }
+        { text: 'C++', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=cpp' } },
+        { text: 'Civics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=civics' } },
+        { text: 'Logic', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=logic' } }
       ],
       [
-        { text: 'Geography', callback_data: 'note_geography' },
-        { text: 'Global Trend', callback_data: 'note_globaltrend' },
-        { text: 'Enterpreneurship', callback_data: 'note_enterpreneurship' }
+        { text: 'Geography', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=geography' } },
+        { text: 'Global Trend', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=globaltrend' } },
+        { text: 'Enterpreneurship', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=enterpreneurship' } }
       ],
       [
-        { text: 'Economics', callback_data: 'note_economics' },
-        { text: 'Psychology', callback_data: 'note_psychology' }
+        { text: 'Economics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=economics' } },
+        { text: 'Psychology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=note&subject=psychology' } }
       ],
       [{ text: '🔙 Back', callback_data: 'main_menu' }]
     ];
   } else if (resourceType === 'worksheet') {
     keyboard = [
       [
-        { text: 'Math', callback_data: 'worksheet_math' },
-        { text: 'Maths Applied', callback_data: 'worksheet_maths-applied' },
-        { text: 'Maths Social', callback_data: 'worksheet_maths-social' }
+        { text: 'Math', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=math' } },
+        { text: 'Maths Applied', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=maths-applied' } },
+        { text: 'Maths Social', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=maths-social' } }
       ],
       [
-        { text: 'English I', callback_data: 'worksheet_english-i' },
-        { text: 'English II', callback_data: 'worksheet_english-ii' },
-        { text: 'Chemistry', callback_data: 'worksheet_chemistry' }
+        { text: 'English I', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=english-i' } },
+        { text: 'English II', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=english-ii' } },
+        { text: 'Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=chemistry' } }
       ],
       [
-        { text: 'Biology', callback_data: 'worksheet_biology' },
-        { text: 'Organic Chemistry', callback_data: 'worksheet_organic-chemistry' },
-        { text: 'Anthropology', callback_data: 'worksheet_anthropology' }
+        { text: 'Biology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=biology' } },
+        { text: 'Organic Chemistry', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=organic-chemistry' } },
+        { text: 'Anthropology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=anthropology' } }
       ],
       [
-        { text: 'Inclusiveness', callback_data: 'worksheet_inclusiveness' },
-        { text: 'Emergining technology', callback_data: 'worksheet_emerging-technology' },
-        { text: 'History', callback_data: 'worksheet_history' }
+        { text: 'Inclusiveness', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=inclusiveness' } },
+        { text: 'Emergining technology', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=emerging-technology' } },
+        { text: 'History', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=history' } }
       ],
       [
-        { text: 'C++', callback_data: 'worksheet_cpp' },
-        { text: 'Civics', callback_data: 'worksheet_civics' },
-        { text: 'Logic', callback_data: 'worksheet_logic' }
+        { text: 'C++', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=cpp' } },
+        { text: 'Civics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=civics' } },
+        { text: 'Logic', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=logic' } }
       ],
       [
-        { text: 'Geography', callback_data: 'worksheet_geography' },
-        { text: 'Global Trend', callback_data: 'worksheet_globaltrend' },
-        { text: 'Enterpreneurship', callback_data: 'worksheet_enterpreneurship' }
+        { text: 'Geography', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=geography' } },
+        { text: 'Global Trend', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=globaltrend' } },
+        { text: 'Enterpreneurship', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=enterpreneurship' } }
       ],
       [
-        { text: 'Economics', callback_data: 'worksheet_economics' },
-        { text: 'Math Worksheet', callback_data: 'worksheet_math' }
+        { text: 'Economics', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=economics' } },
+        { text: 'Math Worksheet', web_app: { url: 'https://freshman-five.vercel.app/miniapp?type=worksheet&subject=math' } }
       ],
       [{ text: '🔙 Back', callback_data: 'main_menu' }]
     ];
