@@ -1,6 +1,8 @@
 "use client";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from 'next/navigation';
+import { Document, Page, pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 function MiniAppContent() {
   const searchParams = useSearchParams();
@@ -8,13 +10,14 @@ function MiniAppContent() {
   const subject = searchParams.get('subject');
   const file = searchParams.get('file');
   const notfound = searchParams.get('notfound');
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
 
   // If file param is not present, try to reconstruct it from type and subject
   let effectiveFile = file;
   let effectiveType = type;
   let effectiveSubject = subject;
   if (!effectiveFile && effectiveType && effectiveSubject) {
-    // Map subject/type to file
     const subjectMap = {
       math: 'mathematics1.pdf',
       'maths-applied': 'MathApplied.pdf',
@@ -51,6 +54,11 @@ function MiniAppContent() {
   }
   const pdfUrl = effectiveFile || null;
 
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+    setPageNumber(1);
+  }
+
   return (
     <main style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
       {notfound === '1' ? (
@@ -58,7 +66,18 @@ function MiniAppContent() {
       ) : pdfUrl ? (
         <>
           <p>Here is your <b>{type}</b> for <b>{subject && subject.replace(/-/g, ' ')}</b>:</p>
-          <iframe src={pdfUrl} width="100%" height="600px" style={{border:'1px solid #ccc', borderRadius:'8px', minHeight:'60vh'}} title="PDF Preview" />
+          <div style={{border:'1px solid #ccc', borderRadius:'8px', minHeight:'60vh', background:'#f9f9f9', padding:8, width:'100%', maxWidth:600}}>
+            <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} loading={<span>Loading PDF...</span>}>
+              <Page pageNumber={pageNumber} width={550} />
+            </Document>
+            {numPages && (
+              <div style={{marginTop:8}}>
+                <button onClick={() => setPageNumber(p => Math.max(1, p-1))} disabled={pageNumber <= 1}>Prev</button>
+                <span style={{margin:'0 12px'}}>Page {pageNumber} of {numPages}</span>
+                <button onClick={() => setPageNumber(p => Math.min(numPages, p+1))} disabled={pageNumber >= numPages}>Next</button>
+              </div>
+            )}
+          </div>
           <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{fontSize:'1.2em', color:'#0077cc', marginTop:16}}>Open PDF in new tab</a>
         </>
       ) : (
