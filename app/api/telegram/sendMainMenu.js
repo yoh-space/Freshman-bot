@@ -20,7 +20,8 @@ export async function sendMainMenu(chatId, message = null) {
           { text: '✍️ Worksheets', callback_data: 'menu_worksheets' }
         ],
         [
-          { text: '🤖 Ask AI', callback_data: 'menu_ai' },
+          // Change Ask AI to open the mini app with ai=1 param
+          { text: '🤖 Ask AI', web_app: { url: 'https://freshman-five.vercel.app/miniapp?ai=1' } },
           { text: '🧠 Quiz Me', callback_data: 'menu_quiz' }
         ],
         [
