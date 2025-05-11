@@ -10,7 +10,7 @@ function MiniAppContent() {
   const notfound = searchParams.get('notfound');
 
   // If file param is present, use it directly for the PDF path
-  const pdfUrl = file ? `/${file}` : (file ? file : null);
+  const pdfUrl = file ? (file.startsWith('/') ? file : '/' + file) : null;
 
   return (
     <main style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
@@ -23,7 +23,7 @@ function MiniAppContent() {
           <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{fontSize:'1.2em', color:'#0077cc', marginTop:16}}>Open PDF in new tab</a>
         </>
       ) : (
-        <p>Welcome! Please select a subject from the Telegram bot menu.</p>
+        <p style={{color:'orange'}}>No file selected. Please select a subject from the Telegram bot menu.</p>
       )}
     </main>
   );
