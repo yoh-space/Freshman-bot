@@ -1,6 +1,29 @@
 "use client";
 import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the AIChatBot component with no SSR
+const AIChatBot = dynamic(() => import('../components/AIChatBot'), { 
+  ssr: false,
+  loading: () => <div style={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    height: '100vh' 
+  }}>Loading AI Chat...</div>
+});
+
+// Dynamically import the SimplePDFViewer component with no SSR
+const SimplePDFViewer = dynamic(() => import('./SimplePDFViewer'), { 
+  ssr: false,
+  loading: () => <div style={{ 
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    height: '60vh' 
+  }}>Loading PDF...</div>
+});
 
 function MiniAppContent() {
   const searchParams = useSearchParams();
@@ -9,8 +32,6 @@ function MiniAppContent() {
   const file = searchParams.get('file');
   const notfound = searchParams.get('notfound');
 
-  // Try to load the PDF directly from the public folder if the file exists
-  // If file param is not present, try to reconstruct it from type and subject
   let effectiveFile = file;
   let effectiveType = type;
   let effectiveSubject = subject;
@@ -59,7 +80,9 @@ function MiniAppContent() {
       ) : pdfUrl ? (
         <>
           <p>Here is your <b>{type}</b> for <b>{subject && subject.replace(/-/g, ' ')}</b>:</p>
-          <iframe src={pdfUrl} width="100%" height="600px" style={{border:'1px solid #ccc', borderRadius:'8px', minHeight:'60vh', background:'#f9f9f9'}} title="PDF Preview" />
+          <div style={{width:'100%', maxWidth:800, margin:'0 auto'}}>
+            <SimplePDFViewer url={pdfUrl} />
+          </div>
           <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{fontSize:'1.2em', color:'#0077cc', marginTop:16}}>Open PDF in new tab</a>
         </>
       ) : (
