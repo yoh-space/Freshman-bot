@@ -18,6 +18,7 @@ export default function SimplePDFViewer({ url }) {
       pdf.getPage(1).then((page) => {
         const viewport = page.getViewport({ scale: 1.5 });
         const canvas = canvasRef.current;
+        if (!canvas) return; // Prevent crash if canvas is not available
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
@@ -36,4 +37,3 @@ export default function SimplePDFViewer({ url }) {
     </div>
   );
 }
- 
