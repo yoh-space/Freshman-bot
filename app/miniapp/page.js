@@ -77,16 +77,20 @@ function MiniAppContent() {
   const pdfUrl = effectiveFile ? `/` + effectiveFile : null;
 
   return (
-    <main style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh', textAlign: 'center' }}>
+    <main style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', textAlign: 'center', padding: 24, background: '#f7fafd' }}>
       {notfound === '1' ? (
         <p style={{color:'red'}}>Sorry, your file isn't uploaded yet. Please check back later.</p>
+      ) : aiMode === '1' ? (
+        <div style={{width:'100%', maxWidth:480, margin:'32px auto 0', background:'#fff', borderRadius:12, boxShadow:'0 2px 12px #0001', padding:16, display:'flex', flexDirection:'column', minHeight:'60vh'}}>
+          <AIChatBot />
+        </div>
       ) : pdfUrl ? (
         <>
-          <p>Here is your <b>{type}</b> for <b>{subject && subject.replace(/-/g, ' ')}</b>:</p>
-          <div style={{width:'100%', maxWidth:800, margin:'0 auto'}}>
+          <p style={{marginBottom: 16}}>Here is your <b>{type}</b> for <b>{subject && subject.replace(/-/g, ' ')}</b>:</p>
+          <div style={{width:'100%', maxWidth:800, margin:'0 auto', background:'#fff', borderRadius:12, boxShadow:'0 2px 12px #0001', padding:24, marginBottom:24}}>
             <SimplePDFViewer url={pdfUrl} />
           </div>
-          <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{fontSize:'1.2em', color:'#0077cc', marginTop:16}}>Open PDF in new tab</a>
+          <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{fontSize:'1.2em', color:'#0077cc', marginTop:16, display:'inline-block'}}>Open PDF in new tab</a>
         </>
       ) : (
         <p style={{color:'orange'}}>No file selected. Please select a subject from the Telegram bot menu.</p>
