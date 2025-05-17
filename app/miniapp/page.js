@@ -3,25 +3,27 @@ import { Suspense } from "react";
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
-// Dynamically import the AIChatBot component with no SSR
 const AIChatBot = dynamic(() => import('../components/AIChatBot'), { 
   ssr: false,
   loading: () => <div style={{ 
     display: 'flex', 
     justifyContent: 'center', 
     alignItems: 'center', 
-    height: '100vh' 
+    height: '100vh',
+    fontSize: '0.9em',
+    color: '#555'
   }}>Loading AI Chat...</div>
 });
 
-// Dynamically import the SimplePDFViewer component with no SSR
 const SimplePDFViewer = dynamic(() => import('./SimplePDFViewer'), { 
   ssr: false,
   loading: () => <div style={{ 
     display: 'flex', 
     justifyContent: 'center', 
     alignItems: 'center', 
-    height: '60vh' 
+    height: '60vh',
+    fontSize: '0.9em',
+    color: '#555'
   }}>Loading PDF...</div>
 });
 
@@ -32,8 +34,6 @@ function MiniAppContent() {
   const file = searchParams.get('file');
   const notfound = searchParams.get('notfound');
   const aiMode = searchParams.get('ai');
-
-  // Removed broken useEffect and undeclared variables
 
   let effectiveFile = file;
   let effectiveType = type;
@@ -73,27 +73,69 @@ function MiniAppContent() {
     else effectiveFile = subjectMap[effectiveSubject];
     if (effectiveFile) effectiveFile = `${folder}/${effectiveFile}`;
   }
-  // Always try to load the PDF directly from the public folder
   const pdfUrl = effectiveFile ? `/` + effectiveFile : null;
 
   return (
-    <main style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', textAlign: 'center', padding: 24, background: '#f7fafd' }}>
+    <main style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      minHeight: '100vh', 
+      textAlign: 'center', 
+      padding: 16, 
+      background: '#f8fafc' 
+    }}>
       {notfound === '1' ? (
-        <p style={{color:'red'}}>Sorry, your file isn't uploaded yet. Please check back later.</p>
+        <p style={{color: '#e53e3e', fontSize: '0.9em'}}>Sorry, your file isn't uploaded yet. Please check back later.</p>
       ) : aiMode === '1' ? (
-        <div style={{width:'100%', maxWidth:480, margin:'32px auto 0', background:'#fff', borderRadius:12, boxShadow:'0 2px 12px #0001', padding:16, display:'flex', flexDirection:'column', minHeight:'60vh'}}>
+        <div style={{
+          width: '100%', 
+          maxWidth: 480, 
+          margin: '16px auto 0', 
+          background: '#fff', 
+          borderRadius: 8, 
+          boxShadow: '0 1px 6px #0001', 
+          padding: 12, 
+          border: '1px solid #e2e8f0',
+          minHeight: '60vh'
+        }}>
           <AIChatBot />
         </div>
       ) : pdfUrl ? (
         <>
-          <p style={{marginBottom: 16}}>Here is your <b>{type}</b> for <b>{subject && subject.replace(/-/g, ' ')}</b>:</p>
-          <div style={{width:'100%', maxWidth:800, margin:'0 auto', background:'#fff', borderRadius:12, boxShadow:'0 2px 12px #0001', padding:24, marginBottom:24}}>
+          <p style={{marginBottom: 12, fontSize: '0.95em', color: '#333'}}>
+            Here is your <b style={{color: '#0066cc'}}>{type}</b> for <b style={{color: '#0066cc'}}>{subject && subject.replace(/-/g, ' ')}</b>:
+          </p>
+          <div style={{
+            width: '100%', 
+            maxWidth: 800, 
+            background: '#fff', 
+            borderRadius: 8, 
+            boxShadow: '0 1px 6px #0001', 
+            padding: 16,
+            border: '1px solid #e2e8f0'
+          }}>
             <SimplePDFViewer url={pdfUrl} />
           </div>
-          <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{fontSize:'1.2em', color:'#0077cc', marginTop:16, display:'inline-block'}}>Open PDF in new tab</a>
+          <a 
+            href={pdfUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            style={{
+              fontSize: '0.9em', 
+              color: '#0077cc', 
+              fontWeight: 600, 
+              textDecoration: 'none',
+              display: 'inline-block',
+              marginTop: 12
+            }}
+          >
+            Open PDF ↗
+          </a>
         </>
       ) : (
-        <p style={{color:'orange'}}>No file selected. Please select a subject from the Telegram bot menu.</p>
+        <p style={{color: '#dd6b20', fontSize: '0.9em'}}>No file selected. Please select a subject from the Telegram bot menu.</p>
       )}
     </main>
   );
