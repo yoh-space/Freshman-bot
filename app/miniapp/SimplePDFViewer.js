@@ -1,7 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+"use client";
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function SimplePDFViewer({ url }) {
   const canvasRef = useRef(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let pdfjsLib, getDocument, GlobalWorkerOptions;
@@ -26,13 +28,21 @@ export default function SimplePDFViewer({ url }) {
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         page.render({ canvasContext: context, viewport });
+      }).catch((err) => {
+        setError('Failed to load PDF page.');
       });
+    }).catch((err) => {
+      setError('Failed to load PDF document.');
     });
     return () => {
       isMounted = false;
       if (pdf) pdf.destroy();
     };
   }, [url]);
+
+  if (error) {
+    return <div style={{ color: 'red', padding: 16 }}>{error}</div>;
+  }
 
   return (
     <div style={{ width: '100%', overflowX: 'auto', background: '#f9f9f9', borderRadius: 8, border: '1px solid #ccc', margin: '0 auto' }}>
