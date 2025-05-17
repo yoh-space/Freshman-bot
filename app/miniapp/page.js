@@ -33,11 +33,7 @@ function MiniAppContent() {
   const notfound = searchParams.get('notfound');
   const aiMode = searchParams.get('ai');
 
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [messages]);
+  // Removed broken useEffect and undeclared variables
 
   let effectiveFile = file;
   let effectiveType = type;
