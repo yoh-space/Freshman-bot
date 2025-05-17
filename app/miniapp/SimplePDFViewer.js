@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import * as pdfjs from 'pdfjs-dist';
@@ -10,7 +9,6 @@ export default function SimplePDFViewer({ url }) {
   const [pdf, setPdf] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-=======
 import React, { useEffect, useRef } from 'react';
 import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import 'pdfjs-dist/web/pdf_viewer.css';
@@ -19,12 +17,10 @@ import 'pdfjs-dist/web/pdf_viewer.css';
 GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js`;
 
 export default function SimplePDFViewer({ url }) {
->>>>>>> 695df4e87424d8313afe8f28dd9d0cdccb47fcdb
   const canvasRef = useRef(null);
 
   useEffect(() => {
     if (!url) return;
-<<<<<<< HEAD
 
     const loadPdf = async () => {
       try {
@@ -82,7 +78,6 @@ export default function SimplePDFViewer({ url }) {
     </div>
   );
 }
-=======
     let pdf = null;
     let isMounted = true;
     getDocument(url).promise.then((loadedPdf) => {
@@ -110,4 +105,3 @@ export default function SimplePDFViewer({ url }) {
     </div>
   );
 }
->>>>>>> 695df4e87424d8313afe8f28dd9d0cdccb47fcdb
