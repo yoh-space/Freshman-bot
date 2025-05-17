@@ -14,7 +14,7 @@ const ETHIOPIAN_THEME = {
 };
 
 async function askAI(question, subject, university) {
-  if (!process.env.NEXT_PUBLIC_OPENROUTER_API_KEY) {
+  if (!(process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY)) {
     return {
       text: `${ETHIOPIAN_THEME.error} AI API key is not configured.`,
       quickReplies: ["Contact support"]
@@ -164,7 +164,7 @@ function formatResponse(text) {
 
 function generateQuickReplies(question, subject, university) {
   const baseReplies = [
-    "Explain simpler",
+    "Explain more",
     "Give examples",
     "Related topics"
   ];

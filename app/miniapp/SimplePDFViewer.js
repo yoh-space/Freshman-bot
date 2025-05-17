@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import * as pdfjs from 'pdfjs-dist';
@@ -9,10 +10,21 @@ export default function SimplePDFViewer({ url }) {
   const [pdf, setPdf] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+=======
+import React, { useEffect, useRef } from 'react';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
+import 'pdfjs-dist/web/pdf_viewer.css';
+
+// Set the workerSrc property
+GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.worker.min.js`;
+
+export default function SimplePDFViewer({ url }) {
+>>>>>>> 695df4e87424d8313afe8f28dd9d0cdccb47fcdb
   const canvasRef = useRef(null);
 
   useEffect(() => {
     if (!url) return;
+<<<<<<< HEAD
 
     const loadPdf = async () => {
       try {
@@ -70,3 +82,32 @@ export default function SimplePDFViewer({ url }) {
     </div>
   );
 }
+=======
+    let pdf = null;
+    let isMounted = true;
+    getDocument(url).promise.then((loadedPdf) => {
+      pdf = loadedPdf;
+      if (!isMounted) return;
+      pdf.getPage(1).then((page) => {
+        const viewport = page.getViewport({ scale: 1.5 });
+        const canvas = canvasRef.current;
+        if (!canvas) return; // Prevent crash if canvas is not available
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+        page.render({ canvasContext: context, viewport });
+      });
+    });
+    return () => {
+      isMounted = false;
+      if (pdf) pdf.destroy();
+    };
+  }, [url]);
+
+  return (
+    <div style={{ width: '100%', overflowX: 'auto', background: '#f9f9f9', borderRadius: 8, border: '1px solid #ccc', margin: '0 auto' }}>
+      <canvas ref={canvasRef} style={{ display: 'block', margin: '0 auto', maxWidth: '100%' }} />
+    </div>
+  );
+}
+>>>>>>> 695df4e87424d8313afe8f28dd9d0cdccb47fcdb

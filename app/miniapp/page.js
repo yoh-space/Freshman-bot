@@ -31,6 +31,13 @@ function MiniAppContent() {
   const subject = searchParams.get('subject');
   const file = searchParams.get('file');
   const notfound = searchParams.get('notfound');
+  const aiMode = searchParams.get('ai');
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
 
   let effectiveFile = file;
   let effectiveType = type;

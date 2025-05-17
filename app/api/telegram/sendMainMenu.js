@@ -20,15 +20,13 @@ export async function sendMainMenu(chatId, message = null) {
           { text: '✍️ Worksheets', callback_data: 'menu_worksheets' }
         ],
         [
-          { text: '🤖 Ask AI', callback_data: 'menu_ai' },
+          // Change Ask AI to open the mini app with ai=1 param
+          { text: '🤖 Ask AI', web_app: { url: 'https://freshman-five.vercel.app/miniapp?ai=1' } },
           { text: '🧠 Quiz Me', callback_data: 'menu_quiz' }
         ],
         [
           { text: '🆘 Help', callback_data: 'menu_help' }
         ],
-        [
-          { text: '🗔 Open Mini App', web_app: { url: 'https://freshman-five.vercel.app/miniapp' } }
-        ]
       ]
     }
   });
@@ -36,4 +34,4 @@ export async function sendMainMenu(chatId, message = null) {
 
 // Example: Add a button to open the mini app (for demo, you can later make this dynamic per subject)
 // Place this in your main menu or subject menu rendering code:
-// <Link href="/miniapp" target="_blank"><button>Open Mini App</button></Link>
+// <Link href="/miniapp" target="_blank"> <button>Open Mini App</button></Link>
