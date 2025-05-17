@@ -83,7 +83,7 @@ function MiniAppContent() {
       alignItems: 'center', 
       minHeight: '100vh', 
       textAlign: 'center', 
-      padding: 16, 
+      padding: 5, 
       background: '#f8fafc' 
     }}>
       {notfound === '1' ? (
@@ -104,7 +104,7 @@ function MiniAppContent() {
         </div>
       ) : pdfUrl ? (
         <>
-          <p style={{marginBottom: 12, fontSize: '0.95em', color: '#333'}}>
+          <p style={{marginBottom: 5, fontSize: '0.5em', color: '#333'}}>
             Here is your <b style={{color: '#0066cc'}}>{type}</b> for <b style={{color: '#0066cc'}}>{subject && subject.replace(/-/g, ' ')}</b>:
           </p>
           <div style={{
